@@ -1,0 +1,27 @@
+<template>
+  <main
+    class="flex-grow flex flex-col justify-center items-center text-center px-4 py-16 sm:py-20 z-0 fade-in">
+    <div
+      class="w-48 h-48 md:w-56 md:h-56 flex items-center justify-center mb-8">
+      <img
+        src="../assets/images/ellipse.png"
+        alt="Ilustração de um computador antigo"
+        class="w-full h-full object-contain" />
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 max-w-3xl">
+      Bem vindos ao Museu Virtual de Hardware!
+    </h1>
+
+    <p class="text-lg md:text-xl max-w-3xl leading-relaxed">
+      Aqui você vai explorar a evolução das tecnologias que moldaram a
+      computação ao longo das décadas. De clássicos que marcaram gerações até
+      componentes que ainda inspiram o futuro, nosso objetivo é preservar a
+      história do hardware e torná-la acessível de forma interativa e
+      envolvente. Sinta-se à vontade para navegar pela linha do tempo, conhecer
+      os principais componentes e descobrir as histórias por trás das máquinas
+      que transformaram o mundo digital.
+    </p>
+  </main>
+</template>
+
+<style scoped></style>
