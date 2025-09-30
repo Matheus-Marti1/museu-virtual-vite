@@ -37,7 +37,7 @@ const closeMobileMenu = () => {
       <div class="flex items-center">
         <router-link to="/"
           ><img
-            src="../assets/images/logo_fatec.png"
+            src="/images/logo_fatec.png"
             alt="Logo da Fatec"
             class="h-14 w-auto"
         /></router-link>

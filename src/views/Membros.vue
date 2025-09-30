@@ -7,7 +7,7 @@
       <div
         class="flex flex-col items-center transition-all duration-300 hover:scale-105">
         <img
-          src="../assets/images/daniel_profile.png"
+          src="/images/daniel_profile.png"
           alt="Foto de Daniel V. Cardamoni"
           class="w-36 h-36 rounded-full object-cover border-4 border-white/80 shadow-lg" />
         <h3 class="mt-4 font-bold text-xl">Daniel V. Cardamoni</h3>
@@ -27,7 +27,7 @@
       <div
         class="flex flex-col items-center transition-all duration-300 hover:scale-105">
         <img
-          src="../assets/images/matheus_profile.png"
+          src="/images/matheus_profile.png"
           alt="Foto de Matheus A. Marti"
           class="w-36 h-36 rounded-full object-cover border-4 border-white/80 shadow-lg" />
         <h3 class="mt-4 font-bold text-xl">Matheus A. Marti</h3>
@@ -37,7 +37,7 @@
       <div
         class="flex flex-col items-center transition-all duration-300 hover:scale-105">
         <img
-          src="../assets/images/jiulius_profile.png"
+          src="/images/jiulius_profile.png"
           alt="Foto de Jiulius Cesar P.B.S."
           class="w-36 h-36 rounded-full object-cover border-4 border-white/80 shadow-lg" />
         <h3 class="mt-4 font-bold text-xl">Jiulius Cesar P.B.S.</h3>
@@ -47,7 +47,7 @@
       <div
         class="flex flex-col items-center transition-all duration-300 hover:scale-105">
         <img
-          src="../assets/images/luiz_profile.png"
+          src="/images/luiz_profile.png"
           alt="Foto de Luiz Guilherme B. Vergani"
           class="w-36 h-36 rounded-full object-cover border-4 border-white/80 shadow-lg" />
         <h3 class="mt-4 font-bold text-xl">Luiz Guilherme B. Vergani</h3>
