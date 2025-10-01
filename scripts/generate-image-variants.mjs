@@ -6,8 +6,14 @@ const ROOT = path.resolve("public", "images", "timeline");
 const VARIANT_WIDTHS = [480, 960, 1440];
 const PLACEHOLDER_WIDTH = 24;
 const SUPPORTED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
+const GENERATED_VARIANT_REGEX = /-(?:\d+w|placeholder)\.[^.]+$/i;
 
 const pendingTasks = [];
+
+const isGeneratedDerivative = (filePath) => {
+  const baseName = path.basename(filePath);
+  return GENERATED_VARIANT_REGEX.test(baseName);
+};
 
 const withSuffix = (filePath, suffix, extOverride) => {
   const parsed = path.parse(filePath);
@@ -28,6 +34,10 @@ const shouldProcess = async (src, dest) => {
 };
 
 const processImage = async (filePath) => {
+  if (isGeneratedDerivative(filePath)) {
+    return;
+  }
+
   const absolutePath = path.resolve(ROOT, filePath);
   const ext = path.extname(filePath).toLowerCase();
 
@@ -39,7 +49,7 @@ const processImage = async (filePath) => {
   await fs.mkdir(relativeDir, { recursive: true });
 
   for (const width of VARIANT_WIDTHS) {
-  const outputPath = withSuffix(absolutePath, `-${width}w`, ".webp");
+    const outputPath = withSuffix(absolutePath, `-${width}w`, ".webp");
     if (!(await shouldProcess(absolutePath, outputPath))) {
       continue;
     }
@@ -58,7 +68,11 @@ const processImage = async (filePath) => {
   if (await shouldProcess(absolutePath, placeholderPath)) {
     pendingTasks.push(
       sharp(absolutePath)
-        .resize({ width: PLACEHOLDER_WIDTH, fit: "inside", withoutEnlargement: true })
+        .resize({
+          width: PLACEHOLDER_WIDTH,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
         .blur(10)
         .toFormat("webp", { quality: 50, effort: 4 })
         .toFile(placeholderPath)
