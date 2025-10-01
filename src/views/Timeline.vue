@@ -18,6 +18,63 @@ const TRANSPARENT_PIXEL =
 
 let lazyObserver = null;
 const lazyTargets = new WeakMap();
+const RESPONSIVE_WIDTHS = [480, 960, 1440];
+const CARD_IMAGE_SIZES = "(max-width: 640px) 90vw, (max-width: 1280px) 45vw, 33vw";
+const MODAL_IMAGE_SIZES = "(max-width: 640px) 90vw, 65vw";
+
+const appendSuffix = (path, suffix, ext) => {
+  const lastDot = path.lastIndexOf(".");
+  if (lastDot === -1) {
+    return `${path}${suffix}${ext ?? ""}`;
+  }
+  const base = path.slice(0, lastDot);
+  const originalExt = path.slice(lastDot);
+  return `${base}${suffix}${ext ?? originalExt}`;
+};
+
+const createResponsiveImageConfig = (input, sizes) => {
+  if (!input) return null;
+
+  if (typeof input === "object" && input.src) {
+    return {
+      placeholder: input.placeholder ?? TRANSPARENT_PIXEL,
+      src: input.src,
+      srcset: input.srcset,
+      sizes: input.sizes ?? sizes,
+    };
+  }
+
+  if (typeof input !== "string") {
+    return null;
+  }
+
+  const lower = input.toLowerCase();
+  if (lower.endsWith(".svg")) {
+    return {
+      placeholder: TRANSPARENT_PIXEL,
+      src: input,
+      srcset: input,
+      sizes,
+    };
+  }
+
+  const variantEntries = RESPONSIVE_WIDTHS.map((width) => ({
+    width,
+    path: appendSuffix(input, `-${width}w`, ".webp"),
+  }));
+
+  const srcset = [
+    ...variantEntries.map(({ width, path }) => `${path} ${width}w`),
+    `${input} 2048w`,
+  ].join(", ");
+
+  return {
+    placeholder: appendSuffix(input, "-placeholder", ".webp"),
+    src: input,
+    srcset,
+    sizes,
+  };
+};
 
 const ensureLazyObserver = () => {
   if (lazyObserver || typeof window === "undefined") {
@@ -105,6 +162,8 @@ const vLazy = {
     if (normalized.placeholder) {
       el.src = normalized.placeholder;
     }
+    el.removeAttribute("srcset");
+    el.removeAttribute("sizes");
 
     const observer = ensureLazyObserver();
     if (observer) {
@@ -133,6 +192,8 @@ const vLazy = {
     if (normalized.placeholder) {
       el.src = normalized.placeholder;
     }
+    el.removeAttribute("srcset");
+    el.removeAttribute("sizes");
 
     const observer = ensureLazyObserver();
     if (observer) {
@@ -187,10 +248,18 @@ const formattedDescription = computed(() => {
     .join("");
 });
 
+const enrichedTimelineItems = computed(() =>
+  timelineItems.map((item) => ({
+    ...item,
+    imageCard: createResponsiveImageConfig(item.imageCard, CARD_IMAGE_SIZES),
+    imageModal: createResponsiveImageConfig(item.imageModal, MODAL_IMAGE_SIZES),
+  }))
+);
+
 const groupedTimelineItems = computed(() => {
   const grouped = {};
 
-  timelineItems.forEach((item) => {
+  enrichedTimelineItems.value.forEach((item) => {
     if (!grouped[item.year]) {
       grouped[item.year] = {
         year: item.year,
@@ -206,7 +275,7 @@ const groupedTimelineItems = computed(() => {
 });
 
 const years = computed(() => {
-  const yearSet = new Set(timelineItems.map((item) => item.year));
+  const yearSet = new Set(enrichedTimelineItems.value.map((item) => item.year));
   return Array.from(yearSet).sort((a, b) => parseInt(a) - parseInt(b));
 });
 
