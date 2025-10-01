@@ -57,16 +57,6 @@ body {
     transition: transform 0.8s ease-out;
   }
 
-  .timeline-hidden {
-    transform: translateY(50px) scale(0.95);
-    pointer-events: none;
-  }
-
-  .timeline-page {
-    position: relative;
-    isolation: isolate;
-  }
-
   .fade-in {
     opacity: 0;
     animation: page-fade-in 0.6s ease-out forwards;
@@ -82,39 +72,7 @@ body {
     }
   }
 
-  .timeline-visible {
-    transform: translate3d(0, 0, 0) scale(1);
-    pointer-events: auto;
-  }
-
-  .timeline-page-fade::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    opacity: 1;
-    pointer-events: none;
-    animation: timeline-page-fade-overlay 0.6s ease-out forwards;
-    z-index: 10;
-  }
-
-  @keyframes timeline-page-fade-overlay {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-
   @media (min-width: 768px) {
-    .timeline-item-left.timeline-hidden {
-      transform: translateX(-80px) scale(0.95);
-    }
-
-    .timeline-item-right.timeline-hidden {
-      transform: translateX(80px) scale(0.95);
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -122,20 +80,10 @@ body {
       transition: none;
     }
 
-    .timeline-hidden,
-    .timeline-visible {
-      transform: none;
-    }
-
-    .timeline-hidden {
-      pointer-events: auto;
-    }
-
     .modal-overlay,
     .modal-content,
     .modal-trigger,
-    .fade-in,
-    .timeline-page-fade {
+    .fade-in {
       transition-duration: 0.01ms !important;
       transition-property: none !important;
       animation: none !important;
@@ -143,10 +91,6 @@ body {
 
     .fade-in {
       opacity: 1;
-    }
-
-    .timeline-page-fade::before {
-      content: none;
     }
   }
 }
@@ -325,4 +269,14 @@ body {
 
 .modal-content::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.5);
+}
+
+.lazy-image {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background-color: rgba(17, 24, 39, 0.35);
+}
+
+.lazy-image.lazy-image-loaded {
+  opacity: 1;
 }

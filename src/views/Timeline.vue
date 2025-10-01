@@ -1,12 +1,5 @@
 <script setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  onUnmounted,
-  watch,
-  onBeforeUpdate,
-} from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { timelineItems } from "../data/timeline-data.js";
 
 const isModalOpen = ref(false);
@@ -16,11 +9,144 @@ const activeYear = ref(null);
 const yearNavEl = ref(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
-const timelineItemRefs = ref([]);
 
-onBeforeUpdate(() => {
-  timelineItemRefs.value = [];
-});
+let scrollShadowRaf = null;
+let yearObserver = null;
+const NAV_VISIBILITY_PADDING = 16;
+const TRANSPARENT_PIXEL =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+let lazyObserver = null;
+const lazyTargets = new WeakMap();
+
+const ensureLazyObserver = () => {
+  if (lazyObserver || typeof window === "undefined") {
+    return lazyObserver;
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    lazyObserver = null;
+    return null;
+  }
+
+  lazyObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          lazyObserver?.unobserve(el);
+          const value = lazyTargets.get(el);
+          if (value) {
+            assignImageSource(el, value);
+          }
+        }
+      });
+    },
+    { rootMargin: "200px 0px", threshold: 0.1 }
+  );
+
+  return lazyObserver;
+};
+
+const normalizeLazyValue = (value) => {
+  if (typeof value === "string") {
+    return { src: value, placeholder: TRANSPARENT_PIXEL };
+  }
+  if (value && typeof value === "object") {
+    return {
+      placeholder: value.placeholder ?? TRANSPARENT_PIXEL,
+      src: value.src,
+      srcset: value.srcset,
+      sizes: value.sizes,
+    };
+  }
+  return { placeholder: TRANSPARENT_PIXEL };
+};
+
+const assignImageSource = (el, value) => {
+  if (!value?.src) {
+    return;
+  }
+
+  if (value.srcset) {
+    el.setAttribute("srcset", value.srcset);
+  } else {
+    el.removeAttribute("srcset");
+  }
+
+  if (value.sizes) {
+    el.setAttribute("sizes", value.sizes);
+  } else {
+    el.removeAttribute("sizes");
+  }
+
+  const markLoaded = () => {
+    el.dataset.lazyLoaded = "true";
+    el.classList.add("lazy-image-loaded");
+    el.removeEventListener("load", markLoaded);
+  };
+
+  el.addEventListener("load", markLoaded);
+  el.src = value.src;
+
+  if (el.complete && el.naturalWidth > 0) {
+    markLoaded();
+  }
+};
+
+const vLazy = {
+  mounted(el, binding) {
+    const normalized = normalizeLazyValue(binding.value);
+    lazyTargets.set(el, normalized);
+
+    el.classList.add("lazy-image");
+    el.dataset.lazyLoaded = "false";
+
+    if (normalized.placeholder) {
+      el.src = normalized.placeholder;
+    }
+
+    const observer = ensureLazyObserver();
+    if (observer) {
+      observer.observe(el);
+    } else {
+      assignImageSource(el, normalized);
+    }
+  },
+  updated(el, binding) {
+    const previous = lazyTargets.get(el);
+    const normalized = normalizeLazyValue(binding.value);
+
+    const hasNewSource =
+      normalized.src !== previous?.src ||
+      normalized.srcset !== previous?.srcset ||
+      normalized.sizes !== previous?.sizes;
+
+    lazyTargets.set(el, normalized);
+
+    if (!hasNewSource) {
+      return;
+    }
+
+    el.classList.remove("lazy-image-loaded");
+    el.dataset.lazyLoaded = "false";
+    if (normalized.placeholder) {
+      el.src = normalized.placeholder;
+    }
+
+    const observer = ensureLazyObserver();
+    if (observer) {
+      observer.observe(el);
+    } else {
+      assignImageSource(el, normalized);
+    }
+  },
+  beforeUnmount(el) {
+    lazyObserver?.unobserve(el);
+    lazyTargets.delete(el);
+  },
+};
+
 
 const openModal = (event, item) => {
   if (event.target.closest("a")) {
@@ -88,7 +214,7 @@ const scrollToYear = (year) => {
   const el = document.getElementById(`year-${year}`);
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
-    centerActiveYear("smooth");
+    centerActiveYear("smooth", { force: true });
   }
 };
 
@@ -99,14 +225,22 @@ const scrollNav = (direction) => {
   }
 };
 
-const updateScrollShadows = () => {
+const applyScrollShadows = () => {
   const el = yearNavEl.value;
   if (!el) return;
   canScrollLeft.value = el.scrollLeft > 2;
   canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
 };
 
-const centerActiveYear = (behavior = "auto") => {
+const scheduleScrollShadowUpdate = () => {
+  if (scrollShadowRaf !== null) return;
+  scrollShadowRaf = requestAnimationFrame(() => {
+    scrollShadowRaf = null;
+    applyScrollShadows();
+  });
+};
+
+const centerActiveYear = (behavior = "auto", { force = false } = {}) => {
   const container = yearNavEl.value;
   if (!container || !activeYear.value) return;
 
@@ -115,25 +249,41 @@ const centerActiveYear = (behavior = "auto") => {
   );
   if (!activeButton) return;
 
+  const buttonLeft = activeButton.offsetLeft;
+  const buttonRight = buttonLeft + activeButton.offsetWidth;
+  const containerLeft = container.scrollLeft;
+  const containerRight = containerLeft + container.clientWidth;
+
+  if (
+    !force &&
+    buttonLeft >= containerLeft + NAV_VISIBILITY_PADDING &&
+    buttonRight <= containerRight - NAV_VISIBILITY_PADDING
+  ) {
+    return;
+  }
+
   const offset =
-    activeButton.offsetLeft -
+    buttonLeft -
     (container.clientWidth / 2 - activeButton.clientWidth / 2);
 
   container.scrollTo({ left: Math.max(0, offset), behavior });
 };
 
 onMounted(() => {
-  yearNavEl.value?.addEventListener("scroll", updateScrollShadows, {
+  yearNavEl.value?.addEventListener("scroll", scheduleScrollShadowUpdate, {
     passive: true,
   });
-  window.addEventListener("resize", updateScrollShadows);
-  updateScrollShadows();
+  window.addEventListener("resize", scheduleScrollShadowUpdate);
+  applyScrollShadows();
 
-  const observer = new IntersectionObserver(
+  yearObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          activeYear.value = entry.target.id.replace("year-", "");
+          const newYear = entry.target.id.replace("year-", "");
+          if (activeYear.value !== newYear) {
+            activeYear.value = newYear;
+          }
         }
       });
     },
@@ -142,35 +292,23 @@ onMounted(() => {
 
   document
     .querySelectorAll(".year-anchor")
-    .forEach((el) => observer.observe(el));
+    .forEach((el) => yearObserver?.observe(el));
 
-  const animationObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("timeline-visible");
-          entry.target.classList.remove("timeline-hidden");
-          animationObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.2 }
-  );
-
-  timelineItemRefs.value.forEach((item) => {
-    if (item) {
-      animationObserver.observe(item);
-    }
-  });
 });
 
 onUnmounted(() => {
-  yearNavEl.value?.removeEventListener("scroll", updateScrollShadows);
-  window.removeEventListener("resize", updateScrollShadows);
+  yearNavEl.value?.removeEventListener("scroll", scheduleScrollShadowUpdate);
+  window.removeEventListener("resize", scheduleScrollShadowUpdate);
+  if (scrollShadowRaf !== null) {
+    cancelAnimationFrame(scrollShadowRaf);
+    scrollShadowRaf = null;
+  }
+  yearObserver?.disconnect();
+  yearObserver = null;
 });
 
 watch(activeYear, () => {
-  centerActiveYear("smooth");
+  centerActiveYear();
 });
 </script>
 
@@ -294,14 +432,9 @@ watch(activeYear, () => {
 
         <div class="mt-6 md:mt-8">
           <div
-            v-for="(item, itemIndex) in yearGroup.items"
+            v-for="item in yearGroup.items"
             :key="item.title"
-            :ref="
-              (el) => {
-                if (el) timelineItemRefs.push(el);
-              }
-            "
-            class="relative mb-12 flex items-start timeline-item timeline-hidden"
+            class="relative mb-12 flex items-start timeline-item"
             :class="[
               yearIndex % 2 === 0
                 ? 'md:flex-row timeline-item-left'
@@ -311,8 +444,10 @@ watch(activeYear, () => {
               @click="openModal($event, item)"
               class="modal-trigger group w-full cursor-pointer rounded-xl border border-white/10 bg-black/20 p-4 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:bg-black/30 hover:shadow-2xl md:w-[calc(50%-2.5rem)]">
               <img
-                :src="item.imageCard"
+                v-lazy="item.imageCard"
                 :alt="'Imagem de ' + item.title"
+                loading="lazy"
+                decoding="async"
                 class="mb-3 w-full rounded-lg object-cover timeline-image" />
               <p
                 class="mb-3 text-right text-xs italic text-gray-400"
@@ -377,8 +512,10 @@ watch(activeYear, () => {
           </h2>
         </div>
         <img
-          :src="selectedItem.imageModal"
+          v-lazy="selectedItem.imageModal"
           :alt="'Imagem detalhada de ' + selectedItem.title"
+          loading="lazy"
+          decoding="async"
           class="modal-image my-4 rounded-lg" />
         <p
           class="mb-4 text-right text-xs italic text-gray-400"
