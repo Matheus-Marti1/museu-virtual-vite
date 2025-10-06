@@ -527,7 +527,7 @@ O GPT-4 pode alcançar altas pontuações em testes criados para humanos, inclui
       '<a href="https://azure.microsoft.com/en-us/blog/quantum/2025/02/19/microsoft-unveils-majorana-1-the-worlds-first-quantum-processor-powered-by-topological-qubits">Foto tirada por John Brecher para Microsoft</a> via https://news.microsoft.com/azure-quantum/ ',
     sourceModal:
       '<a href="https://azure.microsoft.com/en-us/blog/quantum/2025/02/19/microsoft-unveils-majorana-1-the-worlds-first-quantum-processor-powered-by-topological-qubits">Foto tirada por John Brecher para Microsoft</a> via https://news.microsoft.com/azure-quantum/',
-    category: "Inteligência Artificial",
+    category: "Hardware",
     longDescription: `Microsoft revela Majorana 1, a primeira Unidade de Processamento Quântico (QPU) do mundo alimentada por um Núcleo Topológico, projetada para escalar até um milhão de qubits em um único chip.
     O topocondutor, ou supercondutor topológico, é uma categoria especial de material capaz de criar um estado inteiramente novo da matéria – não um estado sólido, líquido ou gasoso, mas um estado topológico. Isso é aproveitado para produzir um qubit mais estável, rápido, pequeno e que pode ser controlado digitalmente, sem as desvantagens exigidas pelas alternativas atuais.`,
   },
