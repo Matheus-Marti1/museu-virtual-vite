@@ -9,6 +9,8 @@ const activeYear = ref(null);
 const yearNavEl = ref(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
+const selectedCategory = ref("Todas");
+const searchQuery = ref("");
 
 let scrollShadowRaf = null;
 let yearObserver = null;
@@ -256,10 +258,56 @@ const enrichedTimelineItems = computed(() =>
   }))
 );
 
+const filteredTimelineItems = computed(() => {
+  let items = enrichedTimelineItems.value;
+  
+  if (selectedCategory.value !== "Todas") {
+    items = items.filter((item) => item.category === selectedCategory.value);
+  }
+  
+  if (searchQuery.value.trim() !== "") {
+    const query = searchQuery.value.toLowerCase();
+    items = items.filter((item) => {
+      return (
+        item.title.toLowerCase().includes(query) ||
+        item.shortDescription.toLowerCase().includes(query) ||
+        item.longDescription.toLowerCase().includes(query) ||
+        item.year.includes(query)
+      );
+    });
+  }
+  
+  return items;
+});
+
+const categoriesWithCount = computed(() => {
+  const categoryCounts = {};
+  
+  const totalCount = enrichedTimelineItems.value.length;
+  categoryCounts["Todas"] = totalCount;
+  
+  enrichedTimelineItems.value.forEach((item) => {
+    if (item.category && item.category.trim() !== "") {
+      categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
+    }
+  });
+  
+  return categoryCounts;
+});
+
+const categories = computed(() => {
+  const uniqueCategories = new Set(
+    timelineItems
+      .map((item) => item.category)
+      .filter((category) => category && category.trim() !== "")
+  );
+  return ["Todas", ...Array.from(uniqueCategories).sort()];
+});
+
 const groupedTimelineItems = computed(() => {
   const grouped = {};
 
-  enrichedTimelineItems.value.forEach((item) => {
+  filteredTimelineItems.value.forEach((item) => {
     if (!grouped[item.year]) {
       grouped[item.year] = {
         year: item.year,
@@ -275,7 +323,7 @@ const groupedTimelineItems = computed(() => {
 });
 
 const years = computed(() => {
-  const yearSet = new Set(enrichedTimelineItems.value.map((item) => item.year));
+  const yearSet = new Set(filteredTimelineItems.value.map((item) => item.year));
   return Array.from(yearSet).sort((a, b) => parseInt(a) - parseInt(b));
 });
 
@@ -379,6 +427,18 @@ onUnmounted(() => {
 watch(activeYear, () => {
   centerActiveYear();
 });
+
+watch(selectedCategory, () => {
+  if (years.value.length > 0) {
+    activeYear.value = years.value[0];
+  }
+});
+
+watch(searchQuery, () => {
+  if (years.value.length > 0) {
+    activeYear.value = years.value[0];
+  }
+});
 </script>
 
 <template>
@@ -386,6 +446,67 @@ watch(activeYear, () => {
     <h1 class="text-4xl md:text-5xl font-bold text-center mb-12">
       Linha do Tempo
     </h1>
+
+    <div class="mb-8 flex flex-col md:flex-row gap-4 justify-center items-center px-4">
+      <div class="relative inline-block w-full max-w-xs">
+        <label for="category-filter" class="block text-sm font-medium text-gray-200 mb-2 text-center">
+          Filtrar por Categoria
+        </label>
+        <select
+          id="category-filter"
+          v-model="selectedCategory"
+          class="block w-full px-4 py-3 pr-10 text-base border border-white/20 rounded-xl bg-black/30 backdrop-blur-md text-white shadow-lg cursor-pointer transition-all duration-200 hover:border-white/40 hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/60 appearance-none">
+          <option
+            v-for="category in categories"
+            :key="category"
+            :value="category"
+            class="bg-gray-900 text-white">
+            {{ category }} ({{ categoriesWithCount[category] || 0 }})
+          </option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white mt-8">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div class="relative inline-block w-full max-w-xs">
+        <label for="search-input" class="block text-sm font-medium text-gray-200 mb-2 text-center">
+          Pesquisar
+        </label>
+        <div class="relative">
+          <input
+            id="search-input"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Buscar por título ou ano..."
+            class="block w-full px-4 py-3 pl-11 pr-10 text-base border border-white/20 rounded-xl bg-black/30 backdrop-blur-md text-white placeholder-gray-400 shadow-lg transition-all duration-200 hover:border-white/40 hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/60" />
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <button
+            v-if="searchQuery"
+            @click="searchQuery = ''"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white transition-colors cursor-pointer"
+            aria-label="Limpar busca">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="searchQuery || selectedCategory !== 'Todas'" class="mb-6 text-center">
+      <p class="text-sm text-gray-300">
+        Mostrando <span class="font-bold text-white">{{ filteredTimelineItems.length }}</span> 
+        {{ filteredTimelineItems.length === 1 ? 'item' : 'itens' }}
+        <span v-if="searchQuery"> para "{{ searchQuery }}"</span>
+      </p>
+    </div>
 
     <nav aria-label="Navegação por anos" class="mb-10 year-nav-sticky">
       <div
@@ -481,9 +602,26 @@ watch(activeYear, () => {
     </section>
 
     <div class="relative mx-auto max-w-5xl px-4 sm:px-6">
+      <div v-if="groupedTimelineItems.length === 0" class="text-center py-20">
+        <svg class="mx-auto h-24 w-24 text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="text-2xl font-bold text-white mb-2">Nenhum item encontrado</h3>
+        <p class="text-gray-400 mb-6">
+          <span v-if="searchQuery">Não encontramos resultados para "{{ searchQuery }}"</span>
+          <span v-else>Não há itens nesta categoria</span>
+        </p>
+        <button
+          @click="searchQuery = ''; selectedCategory = 'Todas'"
+          class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 rounded-xl text-white transition-all duration-200">
+          Limpar filtros
+        </button>
+      </div>
+
       <div
         class="absolute left-1/2 top-0 -ml-px h-full w-0.5 bg-white/20"
-        aria-hidden="true"></div>
+        aria-hidden="true"
+        v-if="groupedTimelineItems.length > 0"></div>
 
       <div
         v-for="(yearGroup, yearIndex) in groupedTimelineItems"
