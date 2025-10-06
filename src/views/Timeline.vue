@@ -11,6 +11,9 @@ const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
 const selectedCategory = ref("Todas");
 const searchQuery = ref("");
+const toastMessage = ref("");
+const toastType = ref("info");
+const showToast = ref(false);
 
 let scrollShadowRaf = null;
 let yearObserver = null;
@@ -23,6 +26,19 @@ const lazyTargets = new WeakMap();
 const RESPONSIVE_WIDTHS = [480, 960, 1440];
 const CARD_IMAGE_SIZES = "(max-width: 640px) 90vw, (max-width: 1280px) 45vw, 33vw";
 const MODAL_IMAGE_SIZES = "(max-width: 640px) 90vw, 65vw";
+
+const categoryColors = {
+  "Computadores": "bg-blue-500/80",
+  "Hardware": "bg-purple-500/80",
+  "Software": "bg-green-500/80",
+  "Empresas": "bg-orange-500/80",
+  "Redes": "bg-cyan-500/80",
+  "Inteligência Artificial": "bg-pink-500/80"
+};
+
+const getCategoryColor = (category) => {
+  return categoryColors[category] || "bg-gray-500/80";
+};
 
 const appendSuffix = (path, suffix, ext) => {
   const lastDot = path.lastIndexOf(".");
@@ -232,6 +248,16 @@ const closeModal = () => {
   }, 200);
 };
 
+const displayToast = (message, type = "info") => {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
+
+  setTimeout(() => {
+    showToast.value = false;
+  }, 3000);
+};
+
 const getModalSource = (item) => {
   if (!item) return "";
   return item.sourceModal || item.source || "";
@@ -260,11 +286,11 @@ const enrichedTimelineItems = computed(() =>
 
 const filteredTimelineItems = computed(() => {
   let items = enrichedTimelineItems.value;
-  
+
   if (selectedCategory.value !== "Todas") {
     items = items.filter((item) => item.category === selectedCategory.value);
   }
-  
+
   if (searchQuery.value.trim() !== "") {
     const query = searchQuery.value.toLowerCase();
     items = items.filter((item) => {
@@ -276,22 +302,22 @@ const filteredTimelineItems = computed(() => {
       );
     });
   }
-  
+
   return items;
 });
 
 const categoriesWithCount = computed(() => {
   const categoryCounts = {};
-  
+
   const totalCount = enrichedTimelineItems.value.length;
   categoryCounts["Todas"] = totalCount;
-  
+
   enrichedTimelineItems.value.forEach((item) => {
     if (item.category && item.category.trim() !== "") {
       categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
     }
   });
-  
+
   return categoryCounts;
 });
 
@@ -411,6 +437,53 @@ onMounted(() => {
     .querySelectorAll(".year-anchor")
     .forEach((el) => yearObserver?.observe(el));
 
+  const handleKeydown = (e) => {
+    if (e.key === "Escape" && isModalOpen.value) {
+      closeModal();
+      return;
+    }
+
+    if (isModalOpen.value || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") {
+      return;
+    }
+
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      const currentIndex = years.value.indexOf(activeYear.value);
+      if (currentIndex > 0) {
+        const previousYear = years.value[currentIndex - 1];
+        scrollToYear(previousYear);
+      }
+    }
+
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      const currentIndex = years.value.indexOf(activeYear.value);
+      if (currentIndex < years.value.length - 1) {
+        const nextYear = years.value[currentIndex + 1];
+        scrollToYear(nextYear);
+      }
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      document.getElementById("search-input")?.focus();
+      displayToast("Campo de busca focado", "info");
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "l") {
+      e.preventDefault();
+      if (searchQuery.value || selectedCategory.value !== "Todas") {
+        searchQuery.value = "";
+        selectedCategory.value = "Todas";
+        displayToast("Filtros limpos", "success");
+      }
+    }
+  };
+
+  window.addEventListener("keydown", handleKeydown);
+
+  window._timelineKeyHandler = handleKeydown;
 });
 
 onUnmounted(() => {
@@ -422,6 +495,11 @@ onUnmounted(() => {
   }
   yearObserver?.disconnect();
   yearObserver = null;
+
+  if (window._timelineKeyHandler) {
+    window.removeEventListener("keydown", window._timelineKeyHandler);
+    delete window._timelineKeyHandler;
+  }
 });
 
 watch(activeYear, () => {
@@ -432,6 +510,7 @@ watch(selectedCategory, () => {
   if (years.value.length > 0) {
     activeYear.value = years.value[0];
   }
+  displayToast(`Filtrado por: ${selectedCategory.value}`, "success");
 });
 
 watch(searchQuery, () => {
@@ -443,6 +522,33 @@ watch(searchQuery, () => {
 
 <template>
   <div>
+    <Transition name="toast">
+      <div v-if="showToast"
+        class="fixed top-4 right-4 z-50 flex items-center gap-3 px-6 py-3 rounded-xl shadow-2xl backdrop-blur-md border max-w-sm"
+        :class="{
+          'bg-blue-500/90 border-blue-400/50 text-white': toastType === 'info',
+          'bg-green-500/90 border-green-400/50 text-white': toastType === 'success',
+          'bg-red-500/90 border-red-400/50 text-white': toastType === 'error',
+        }">
+        <svg v-if="toastType === 'info'" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <svg v-if="toastType === 'success'" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <svg v-if="toastType === 'error'" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-sm font-medium">{{ toastMessage }}</span>
+      </div>
+    </Transition>
+
     <h1 class="text-4xl md:text-5xl font-bold text-center mb-12">
       Linha do Tempo
     </h1>
@@ -452,15 +558,9 @@ watch(searchQuery, () => {
         <label for="category-filter" class="block text-sm font-medium text-gray-200 mb-2 text-center">
           Filtrar por Categoria
         </label>
-        <select
-          id="category-filter"
-          v-model="selectedCategory"
+        <select id="category-filter" v-model="selectedCategory"
           class="block w-full px-4 py-3 pr-10 text-base border border-white/20 rounded-xl bg-black/30 backdrop-blur-md text-white shadow-lg cursor-pointer transition-all duration-200 hover:border-white/40 hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/60 appearance-none">
-          <option
-            v-for="category in categories"
-            :key="category"
-            :value="category"
-            class="bg-gray-900 text-white">
+          <option v-for="category in categories" :key="category" :value="category" class="bg-gray-900 text-white">
             {{ category }} ({{ categoriesWithCount[category] || 0 }})
           </option>
         </select>
@@ -476,23 +576,20 @@ watch(searchQuery, () => {
           Pesquisar
         </label>
         <div class="relative">
-          <input
-            id="search-input"
-            v-model="searchQuery"
-            type="text"
-            placeholder="Buscar por título ou ano..."
+          <input id="search-input" v-model="searchQuery" type="text" placeholder="Buscar por título ou ano..."
             class="block w-full px-4 py-3 pl-11 pr-10 text-base border border-white/20 rounded-xl bg-black/30 backdrop-blur-md text-white placeholder-gray-400 shadow-lg transition-all duration-200 hover:border-white/40 hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/60" />
           <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
-          <button
-            v-if="searchQuery"
-            @click="searchQuery = ''"
+          <button v-if="searchQuery" @click="searchQuery = ''"
             class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white transition-colors cursor-pointer"
             aria-label="Limpar busca">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
@@ -502,50 +599,33 @@ watch(searchQuery, () => {
 
     <div v-if="searchQuery || selectedCategory !== 'Todas'" class="mb-6 text-center">
       <p class="text-sm text-gray-300">
-        Mostrando <span class="font-bold text-white">{{ filteredTimelineItems.length }}</span> 
+        Mostrando <span class="font-bold text-white">{{ filteredTimelineItems.length }}</span>
         {{ filteredTimelineItems.length === 1 ? 'item' : 'itens' }}
         <span v-if="searchQuery"> para "{{ searchQuery }}"</span>
       </p>
     </div>
 
     <nav aria-label="Navegação por anos" class="mb-10 year-nav-sticky">
-      <div
-        ref="yearNavWrapperEl"
+      <div ref="yearNavWrapperEl"
         class="year-nav-wrapper relative border border-white/10 bg-white/5 backdrop-blur-md rounded-xl">
         <button
           class="hidden md:flex absolute top-1/2 -translate-y-1/2 -left-1 z-10 items-center justify-center w-9 h-9 rounded-full backdrop-blur-md border border-white/25 bg-white/10 text-white transition hover:scale-105 hover:bg-white/20 hover:border-white/40 cursor-pointer"
-          type="button"
-          aria-label="Rolar anos para a esquerda"
-          v-show="canScrollLeft"
-          @click="scrollNav(-1)">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
+          type="button" aria-label="Rolar anos para a esquerda" v-show="canScrollLeft" @click="scrollNav(-1)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
 
-        <div
-          ref="yearNavEl"
+        <div ref="yearNavEl"
           class="year-nav overflow-x-auto scroll-smooth cursor-grab flex gap-3 md:gap-4 items-center py-2 pl-10 pr-10 md:pl-12 md:pr-12"
           :class="{
             'pl-12 md:pl-16': !canScrollLeft,
             'pr-12 md:pr-16': !canScrollRight,
           }">
-          <button
-            v-for="year in years"
-            :key="'nav-' + year"
-            type="button"
-            @click="scrollToYear(year)"
+          <button v-for="year in years" :key="'nav-' + year" type="button" @click="scrollToYear(year)"
             class="whitespace-nowrap cursor-pointer border border-white/25 bg-white/10 text-white rounded-full px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base shadow-sm transition transform hover:-translate-y-0.5 hover:bg-white/20 hover:border-white/40"
-            :data-year="year"
-            :class="{
+            :data-year="year" :class="{
               'bg-white/30 border-white/60 text-gray-900 font-bold':
                 activeYear === year,
             }">
@@ -555,19 +635,9 @@ watch(searchQuery, () => {
 
         <button
           class="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-1 z-10 items-center justify-center w-9 h-9 rounded-full backdrop-blur-md border border-white/25 bg-white/10 text-white transition hover:scale-105 hover:bg-white/20 hover:border-white/40 cursor-pointer"
-          type="button"
-          aria-label="Rolar anos para a direita"
-          v-show="canScrollRight"
-          @click="scrollNav(1)">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
+          type="button" aria-label="Rolar anos para a direita" v-show="canScrollRight" @click="scrollNav(1)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
@@ -585,52 +655,75 @@ watch(searchQuery, () => {
       <p
         class="timeline-disclaimer mx-auto max-w-3xl text-center text-sm text-gray-200 opacity-90 italic leading-relaxed">
         Os textos exibidos foram adaptados de coleções públicas como
-        <a
-          href="https://www.computinghistory.org.uk/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Centre for Computing History</a
-        >
+        <a href="https://www.computinghistory.org.uk/" target="_blank" rel="noopener noreferrer">Centre for Computing
+          History</a>
         e o
-        <a
-          href="https://computerhistory.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Computer History Museum</a
-        >.
+        <a href="https://computerhistory.org/" target="_blank" rel="noopener noreferrer">Computer History Museum</a>.
       </p>
+
+      <div class="mt-6 hidden md:flex justify-center">
+        <details class="group cursor-pointer">
+          <summary
+            class="text-xs text-gray-400 hover:text-gray-300 transition-colors list-none flex items-center gap-2">
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Atalhos de teclado disponíveis</span>
+          </summary>
+          <div class="mt-3 p-4 rounded-lg bg-white/5 border border-white/10 backdrop-blur-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-300">
+              <div class="flex items-center gap-2">
+                <kbd class="px-2 py-1 bg-gray-700/50 rounded border border-gray-600 font-mono">←</kbd>
+                <span>Navegar anos anteriores</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <kbd class="px-2 py-1 bg-gray-700/50 rounded border border-gray-600 font-mono">→</kbd>
+                <span>Navegar próximos anos</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <kbd class="px-2 py-1 bg-gray-700/50 rounded border border-gray-600 font-mono">Esc</kbd>
+                <span>Fechar modal</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <kbd class="px-2 py-1 bg-gray-700/50 rounded border border-gray-600 font-mono">Ctrl+K</kbd>
+                <span>Focar na busca</span>
+              </div>
+              <div class="flex items-center gap-2 md:col-span-2">
+                <kbd class="px-2 py-1 bg-gray-700/50 rounded border border-gray-600 font-mono">Ctrl+L</kbd>
+                <span>Limpar todos os filtros</span>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
     </section>
 
     <div class="relative mx-auto max-w-5xl px-4 sm:px-6">
       <div v-if="groupedTimelineItems.length === 0" class="text-center py-20">
-        <svg class="mx-auto h-24 w-24 text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg class="mx-auto h-24 w-24 text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         <h3 class="text-2xl font-bold text-white mb-2">Nenhum item encontrado</h3>
         <p class="text-gray-400 mb-6">
           <span v-if="searchQuery">Não encontramos resultados para "{{ searchQuery }}"</span>
           <span v-else>Não há itens nesta categoria</span>
         </p>
-        <button
-          @click="searchQuery = ''; selectedCategory = 'Todas'"
+        <button @click="searchQuery = ''; selectedCategory = 'Todas'"
           class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 rounded-xl text-white transition-all duration-200">
           Limpar filtros
         </button>
       </div>
 
-      <div
-        class="absolute left-1/2 top-0 -ml-px h-full w-0.5 bg-white/20"
-        aria-hidden="true"
+      <div class="absolute left-1/2 top-0 -ml-px h-full w-0.5 bg-white/20" aria-hidden="true"
         v-if="groupedTimelineItems.length > 0"></div>
 
-      <div
-        v-for="(yearGroup, yearIndex) in groupedTimelineItems"
-        :key="yearGroup.year"
-        class="relative year-anchor"
+      <div v-for="(yearGroup, yearIndex) in groupedTimelineItems" :key="yearGroup.year" class="relative year-anchor"
         :id="'year-' + yearGroup.year">
-        <div
-          class="z-20 flex items-center"
-          :class="[yearIndex % 2 === 0 ? 'justify-start' : 'md:justify-end']">
+        <div class="z-20 flex items-center" :class="[yearIndex % 2 === 0 ? 'justify-start' : 'md:justify-end']">
           <h2
             class="w-20 rounded-full border border-white/30 bg-gray-900/80 px-4 py-2 text-center text-sm font-semibold text-white backdrop-blur-sm">
             {{ yearGroup.year }}
@@ -638,27 +731,33 @@ watch(searchQuery, () => {
         </div>
 
         <div class="mt-6 md:mt-8">
-          <div
-            v-for="item in yearGroup.items"
-            :key="item.title"
-            class="relative mb-12 flex items-start timeline-item"
+          <div v-for="item in yearGroup.items" :key="item.title" class="relative mb-12 flex items-start timeline-item"
             :class="[
               yearIndex % 2 === 0
                 ? 'md:flex-row timeline-item-left'
                 : 'md:flex-row-reverse timeline-item-right',
             ]">
-            <button
-              @click="openModal($event, item)"
+            <button @click="openModal($event, item)"
               class="modal-trigger group w-full cursor-pointer rounded-xl border border-white/10 bg-black/20 p-4 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:bg-black/30 hover:shadow-2xl md:w-[calc(50%-2.5rem)]">
-              <img
-                v-lazy="item.imageCard"
-                :alt="'Imagem de ' + item.title"
-                loading="lazy"
-                decoding="async"
-                class="mb-3 w-full rounded-lg object-cover timeline-image" />
-              <p
-                class="mb-3 text-right text-xs italic text-gray-400"
-                v-html="'Fonte: ' + getCardSource(item)"></p>
+
+              <img v-lazy="item.imageCard" :alt="'Imagem de ' + item.title" loading="lazy" decoding="async"
+                class="w-full rounded-lg object-cover timeline-image mb-3" />
+
+              <div class="mb-3 flex items-center justify-between">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-sm"
+                  :class="getCategoryColor(item.category)">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  {{ item.category }}
+                </span>
+                <span class="text-xs font-medium text-gray-400">{{ item.year }}</span>
+              </div>
+
+              <p class="mb-3 text-right text-xs italic text-gray-400" v-html="'Fonte: ' + getCardSource(item)"></p>
               <h3 class="mb-1 text-lg font-bold text-white">
                 {{ item.title }}
               </h3>
@@ -681,55 +780,30 @@ watch(searchQuery, () => {
       </div>
     </div>
 
-    <div
-      v-if="isModalOpen"
-      @click.self="closeModal"
-      class="modal-overlay"
-      :class="{
-        'modal-entering': modalState === 'entering',
-        'modal-visible': modalState === 'visible',
-        'modal-leaving': modalState === 'leaving',
-      }">
-      <div
-        v-if="selectedItem"
+    <div v-if="isModalOpen" @click.self="closeModal" class="modal-overlay" :class="{
+      'modal-entering': modalState === 'entering',
+      'modal-visible': modalState === 'visible',
+      'modal-leaving': modalState === 'leaving',
+    }">
+      <div v-if="selectedItem"
         class="modal-content relative mx-4 my-8 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl border border-white/20 bg-gray-900/80 p-6 text-gray-300 shadow-2xl backdrop-blur-lg sm:p-8">
-        <button
-          @click="closeModal"
+        <button @click="closeModal"
           class="absolute right-4 top-4 z-20 cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
           aria-label="Fechar modal">
-          <svg
-            class="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"></path>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
         <div class="pr-12 mb-2">
           <h2 class="text-2xl font-bold text-white sm:text-3xl">
             {{ selectedItem.title }}
-            <span class="text-xl font-semibold text-gray-400"
-              >({{ selectedItem.year }})</span
-            >
+            <span class="text-xl font-semibold text-gray-400">({{ selectedItem.year }})</span>
           </h2>
         </div>
-        <img
-          v-lazy="selectedItem.imageModal"
-          :alt="'Imagem detalhada de ' + selectedItem.title"
-          loading="lazy"
-          decoding="async"
-          class="modal-image my-4 rounded-lg" />
-        <p
-          class="mb-4 text-right text-xs italic text-gray-400"
-          v-html="'Fonte: ' + getModalSource(selectedItem)"></p>
-        <div
-          class="prose prose-invert max-w-none text-gray-300"
-          v-html="formattedDescription"></div>
+        <img v-lazy="selectedItem.imageModal" :alt="'Imagem detalhada de ' + selectedItem.title" loading="lazy"
+          decoding="async" class="modal-image my-4 rounded-lg" />
+        <p class="mb-4 text-right text-xs italic text-gray-400" v-html="'Fonte: ' + getModalSource(selectedItem)"></p>
+        <div class="prose prose-invert max-w-none text-gray-300" v-html="formattedDescription"></div>
       </div>
     </div>
   </div>
