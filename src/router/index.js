@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Timeline from "../views/Timeline.vue";
 import Membros from "../views/Membros.vue";
+import Admin from "../views/Admin.vue";
 import Fonte from "../views/componentes/Fonte.vue";
 import Gabinete from "../views/componentes/Gabinete.vue";
 import HdSsd from "../views/componentes/HdSsd.vue";
@@ -26,6 +27,18 @@ const routes = [
     path: "/membros",
     name: "Membros",
     component: Membros,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin,
+    beforeEnter: (to, from, next) => {
+      if (import.meta.env.DEV) {
+        next();
+      } else {
+        next("/");
+      }
+    },
   },
   {
     path: "/componentes/fonte",
@@ -66,7 +79,7 @@ const routes = [
     path: "/componentes/ram",
     name: "Ram",
     component: Ram,
-  }
+  },
 ];
 
 const router = createRouter({
