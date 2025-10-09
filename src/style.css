@@ -35,12 +35,19 @@ body {
 @layer components {
   .year-nav-sticky {
     position: sticky;
-    top: var(--year-nav-top-gap, 8px);
-    z-index: 10;
+    top: calc(var(--year-nav-top-gap, 8px) + 6rem);
+    z-index: 40;
   }
+  
+  @media (max-width: 768px) {
+    .year-nav-sticky {
+      z-index: 20;
+    }
+  }
+  
   .year-anchor {
     scroll-margin-top: calc(
-      var(--year-nav-height, 52px) + var(--year-nav-top-gap, 8px) + 8px
+      var(--year-nav-height, 52px) + var(--year-nav-top-gap, 8px) + 6rem + 8px
     );
   }
 

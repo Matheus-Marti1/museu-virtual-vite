@@ -25,7 +25,7 @@ onUnmounted(() => {
   <div class="fixed inset-0 bg-main-background -z-10"></div>
   <div class="relative min-h-screen flex flex-col">
     <Header />
-    <main class="container mx-auto px-6 py-12 flex-grow">
+    <main class="container mx-auto px-6 py-12 flex-grow pt-28">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />

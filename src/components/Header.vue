@@ -7,6 +7,7 @@ const isMobileMenuOpen = ref(false);
 const isMobileComponentesOpen = ref(false);
 const route = useRoute();
 const componentesMenuRef = ref(null);
+const isScrolled = ref(false);
 
 const handleClickOutside = (event) => {
   if (
@@ -17,12 +18,18 @@ const handleClickOutside = (event) => {
   }
 };
 
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 20;
+};
+
 onMounted(() => {
   document.addEventListener("mousedown", handleClickOutside);
+  window.addEventListener("scroll", handleScroll, { passive: true });
 });
 
 onUnmounted(() => {
   document.removeEventListener("mousedown", handleClickOutside);
+  window.removeEventListener("scroll", handleScroll);
 });
 
 const isComponentesActive = computed(() => {
@@ -40,7 +47,9 @@ const closeMobileMenu = () => {
 </script>
 
 <template>
-  <header class="w-full py-4 px-8 md:px-14 z-20">
+  <header 
+    class="fixed top-0 left-0 right-0 w-full py-4 px-8 md:px-14 z-50 transition-all duration-300"
+    :class="isScrolled ? 'bg-black/50 backdrop-blur-lg border-b border-white/20 shadow-xl' : 'bg-transparent'">
     <nav class="flex justify-between items-center">
       <div class="flex items-center">
         <router-link to="/"><img src="/images/logo_fatec.png" alt="Logo da Fatec" class="h-14 w-auto" /></router-link>
@@ -122,9 +131,9 @@ const closeMobileMenu = () => {
   </header>
 
   <div :class="{ 'opacity-0 scale-95 pointer-events-none': !isMobileMenuOpen }" id="mobileMenu"
-    class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-30 flex flex-col items-center justify-center transition-all duration-300 transform">
+    class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[60] flex flex-col items-center justify-center transition-all duration-300 transform">
     <button @click="isMobileMenuOpen = false" id="closeMobileMenuBtn"
-      class="absolute top-6 right-8 text-white focus:outline-none transition-all duration-300">
+      class="absolute top-6 right-8 text-white focus:outline-none transition-all duration-300 z-[70]">
       <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
@@ -160,12 +169,12 @@ const closeMobileMenu = () => {
     'opacity-0 translate-x-full pointer-events-none':
       !isMobileComponentesOpen,
   }" id="mobileComponentesSubmenu"
-    class="md:hidden fixed inset-0 bg-black/70 backdrop-blur-md z-40 transition-all duration-300 transform">
+    class="md:hidden fixed inset-0 bg-black/70 backdrop-blur-md z-[70] transition-all duration-300 transform">
     <div class="flex flex-col h-full">
       <div class="flex items-center justify-between p-6 border-b border-white/20">
         <h2 class="text-2xl font-bold text-white">Componentes</h2>
         <button @click="isMobileComponentesOpen = false" id="closeMobileComponentesBtn"
-          class="text-white focus:outline-none transition-all duration-300 hover:text-gray-300">
+          class="text-white focus:outline-none transition-all duration-300 hover:text-gray-300 z-[80]">
           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
