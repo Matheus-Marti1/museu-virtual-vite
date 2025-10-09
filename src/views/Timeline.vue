@@ -33,11 +33,22 @@ const categoryColors = {
   "Software": "bg-green-500/80",
   "Empresas": "bg-orange-500/80",
   "Redes": "bg-cyan-500/80",
-  "Inteligência Artificial": "bg-pink-500/80"
+  "Inteligência Artificial": "bg-pink-500/80",
+  "Smartphones": "bg-yellow-500/80",
 };
 
 const getCategoryColor = (category) => {
   return categoryColors[category] || "bg-gray-500/80";
+};
+
+const getItemCategories = (item) => {
+  if (!item.category) return [];
+  return Array.isArray(item.category) ? item.category : [item.category];
+};
+
+const hasCategory = (item, category) => {
+  const categories = getItemCategories(item);
+  return categories.includes(category);
 };
 
 const appendSuffix = (path, suffix, ext) => {
@@ -288,7 +299,7 @@ const filteredTimelineItems = computed(() => {
   let items = enrichedTimelineItems.value;
 
   if (selectedCategory.value !== "Todas") {
-    items = items.filter((item) => item.category === selectedCategory.value);
+    items = items.filter((item) => hasCategory(item, selectedCategory.value));
   }
 
   if (searchQuery.value.trim() !== "") {
@@ -313,20 +324,29 @@ const categoriesWithCount = computed(() => {
   categoryCounts["Todas"] = totalCount;
 
   enrichedTimelineItems.value.forEach((item) => {
-    if (item.category && item.category.trim() !== "") {
-      categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
-    }
+    const categories = getItemCategories(item);
+    categories.forEach((category) => {
+      if (category && category.trim() !== "") {
+        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+      }
+    });
   });
 
   return categoryCounts;
 });
 
 const categories = computed(() => {
-  const uniqueCategories = new Set(
-    timelineItems
-      .map((item) => item.category)
-      .filter((category) => category && category.trim() !== "")
-  );
+  const uniqueCategories = new Set();
+  
+  timelineItems.forEach((item) => {
+    const categories = getItemCategories(item);
+    categories.forEach((category) => {
+      if (category && category.trim() !== "") {
+        uniqueCategories.add(category);
+      }
+    });
+  });
+  
   return ["Todas", ...Array.from(uniqueCategories).sort()];
 });
 
@@ -743,17 +763,21 @@ watch(searchQuery, () => {
               <img v-lazy="item.imageCard" :alt="'Imagem de ' + item.title" loading="lazy" decoding="async"
                 class="w-full rounded-lg object-cover timeline-image mb-3" />
 
-              <div class="mb-3 flex items-center justify-between">
-                <span
-                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-sm"
-                  :class="getCategoryColor(item.category)">
-                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  {{ item.category }}
-                </span>
+              <div class="mb-3 flex items-center justify-between flex-wrap gap-2">
+                <div class="flex flex-wrap gap-1.5">
+                  <span
+                    v-for="category in getItemCategories(item)"
+                    :key="category"
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-sm"
+                    :class="getCategoryColor(category)">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd"
+                        d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    {{ category }}
+                  </span>
+                </div>
                 <span class="text-xs font-medium text-gray-400">{{ item.year }}</span>
               </div>
 

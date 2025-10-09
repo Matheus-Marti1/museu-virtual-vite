@@ -16,7 +16,7 @@ const newItem = ref({
   title: "",
   shortDescription: "",
   longDescription: "",
-  category: "Computadores",
+  category: [],
   imageCard: "",
   imageModal: "",
   sourceCard: "",
@@ -34,6 +34,7 @@ const categories = [
   "Empresas",
   "Redes",
   "Inteligência Artificial",
+  "Smartphones",
 ];
 
 const categoryColors = {
@@ -43,10 +44,24 @@ const categoryColors = {
   Empresas: "bg-orange-500/80",
   Redes: "bg-cyan-500/80",
   "Inteligência Artificial": "bg-pink-500/80",
+  Smartphones: "bg-yellow-500/80",
 };
 
 const getCategoryColor = (category) => {
   return categoryColors[category] || "bg-gray-500/80";
+};
+
+const toggleCategory = (category) => {
+  const index = newItem.value.category.indexOf(category);
+  if (index > -1) {
+    newItem.value.category.splice(index, 1);
+  } else {
+    newItem.value.category.push(category);
+  }
+};
+
+const isCategorySelected = (category) => {
+  return newItem.value.category.includes(category);
 };
 
 const toastMessage = ref("");
@@ -70,7 +85,8 @@ const generatePreview = () => {
     !newItem.value.shortDescription ||
     !newItem.value.longDescription ||
     !newItem.value.imageCard ||
-    !newItem.value.sourceCard
+    !newItem.value.sourceCard ||
+    newItem.value.category.length === 0
   ) {
     displayToast("Preencha todos os campos obrigatórios (*)", "error");
     return;
@@ -106,6 +122,10 @@ const generateCode = () => {
     .replace(/`/g, "\\`")
     .replace(/\$/g, "\\$");
 
+  const categoryValue = previewItem.value.category.length === 1
+    ? `"${previewItem.value.category[0]}"`
+    : `[${previewItem.value.category.map(cat => `"${cat}"`).join(", ")}]`;
+
   const code = `  {
     year: "${previewItem.value.year}",
     title: "${previewItem.value.title}",
@@ -114,7 +134,7 @@ const generateCode = () => {
     imageModal: "${previewItem.value.imageModal}",
     sourceCard: \`${escapedSourceCard}\`,
     sourceModal: \`${escapedSourceModal}\`,
-    category: "${previewItem.value.category}",
+    category: ${categoryValue},
     longDescription: \`${escapedLongDesc}\`,
   },`;
 
@@ -131,7 +151,7 @@ const resetForm = () => {
     title: "",
     shortDescription: "",
     longDescription: "",
-    category: "Computadores",
+    category: [],
     imageCard: "",
     imageModal: "",
     sourceCard: "",
@@ -265,26 +285,47 @@ const formattedDescription = (text) => {
 
               <div>
                 <label class="block text-sm font-medium mb-2"
-                  >Categoria *</label
+                  >Título *</label
                 >
-                <select
-                  v-model="newItem.category"
-                  class="w-full px-4 py-2 rounded-lg bg-black/50 border border-white/20 focus:border-white/40 focus:outline-none transition-colors">
-                  <option v-for="cat in categories" :key="cat" :value="cat">
-                    {{ cat }}
-                  </option>
-                </select>
+                <input
+                  v-model="newItem.title"
+                  type="text"
+                  required
+                  placeholder="Ex: Computador Atanasoff-Berry"
+                  class="w-full px-4 py-2 rounded-lg bg-black/50 border border-white/20 focus:border-white/40 focus:outline-none transition-colors" />
               </div>
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Título *</label>
-              <input
-                v-model="newItem.title"
-                type="text"
-                required
-                placeholder="Ex: Computador Atanasoff-Berry"
-                class="w-full px-4 py-2 rounded-lg bg-black/50 border border-white/20 focus:border-white/40 focus:outline-none transition-colors" />
+              <label class="block text-sm font-medium mb-3"
+                >Categorias * (selecione uma ou mais)</label
+              >
+              <div class="grid sm:grid-cols-2 gap-3">
+                <label
+                  v-for="cat in categories"
+                  :key="cat"
+                  class="flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-all"
+                  :class="
+                    isCategorySelected(cat)
+                      ? 'bg-white/10 border-white/40 hover:bg-white/15'
+                      : 'bg-black/30 border-white/20 hover:bg-black/40 hover:border-white/30'
+                  ">
+                  <input
+                    type="checkbox"
+                    :checked="isCategorySelected(cat)"
+                    @change="toggleCategory(cat)"
+                    class="w-4 h-4 rounded border-white/30 bg-black/50 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer" />
+                  <div class="flex items-center gap-2 flex-1">
+                    <span
+                      class="w-3 h-3 rounded-full"
+                      :class="getCategoryColor(cat)"></span>
+                    <span class="text-sm font-medium">{{ cat }}</span>
+                  </div>
+                </label>
+              </div>
+              <p class="mt-2 text-xs text-gray-400">
+                💡 Selecione categorias que melhor descrevem o item
+              </p>
             </div>
 
             <div>
@@ -487,18 +528,22 @@ const formattedDescription = (text) => {
                 class="mb-3 text-right text-xs italic text-gray-400"
                 v-html="previewItem.sourceCard"></p>
 
-              <div class="mb-3 flex items-center justify-between">
-                <span
-                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white"
-                  :class="getCategoryColor(previewItem.category)">
-                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fill-rule="evenodd"
-                      d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  {{ previewItem.category }}
-                </span>
+              <div class="mb-3 flex items-center justify-between flex-wrap gap-2">
+                <div class="flex flex-wrap gap-1.5">
+                  <span
+                    v-for="cat in previewItem.category"
+                    :key="cat"
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white"
+                    :class="getCategoryColor(cat)">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    {{ cat }}
+                  </span>
+                </div>
                 <span class="text-xs font-medium text-gray-400">{{
                   previewItem.year
                 }}</span>
@@ -589,17 +634,19 @@ const formattedDescription = (text) => {
           @click.stop>
           <div
             class="sticky top-0 bg-black/50 backdrop-blur-md border-b border-white/20 p-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 flex-wrap">
               <span
+                v-for="cat in previewItem.category"
+                :key="cat"
                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white"
-                :class="getCategoryColor(previewItem.category)">
+                :class="getCategoryColor(cat)">
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
                     clip-rule="evenodd" />
                 </svg>
-                {{ previewItem.category }}
+                {{ cat }}
               </span>
               <span class="text-sm font-medium text-gray-400">{{
                 previewItem.year
@@ -607,7 +654,7 @@ const formattedDescription = (text) => {
             </div>
             <button
               @click="closeModalPreview"
-              class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+              class="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0">
               <svg
                 class="w-5 h-5"
                 fill="none"
