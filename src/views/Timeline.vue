@@ -775,20 +775,7 @@ watch(searchQuery, () => {
     <section class="mb-12">
       <p
         class="timeline-disclaimer mx-auto max-w-3xl text-center text-sm text-gray-200 opacity-90 italic leading-relaxed">
-        Os textos exibidos foram adaptados de coleções públicas como
-        <a
-          href="https://www.computinghistory.org.uk/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Centre for Computing History</a
-        >
-        e o
-        <a
-          href="https://computerhistory.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Computer History Museum</a
-        >.
+        <router-link to="/Fontes">Fontes utilizadas</router-link>.
       </p>
 
       <div class="mt-6 hidden md:flex justify-center">
