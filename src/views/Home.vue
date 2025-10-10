@@ -1,7 +1,12 @@
 <template>
-  <main class="flex-grow flex flex-col justify-center items-center text-center px-4 py-16 sm:py-20 z-0 fade-in">
-    <div class="w-48 h-48 md:w-56 md:h-56 flex items-center justify-center mb-8">
-      <img src="/images/ellipse.png" alt="Ilustração de um computador antigo" class="w-full h-full object-contain" />
+  <main
+    class="flex-grow flex flex-col justify-center items-center text-center px-4 py-16 sm:py-20 z-0 opacity-0 animate-[fade-in_0.6s_ease-out_forwards]">
+    <div
+      class="w-48 h-48 md:w-56 md:h-56 flex items-center justify-center mb-8">
+      <img
+        src="/images/ellipse.png"
+        alt="Ilustração de um computador antigo"
+        class="w-full h-full object-contain" />
     </div>
     <h1 class="text-4xl md:text-5xl font-bold mb-6 max-w-3xl">
       Bem vindos ao Museu Virtual de Hardware!
