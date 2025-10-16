@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Timeline from "../views/Timeline.vue";
 import Membros from "../views/Membros.vue";
 import Admin from "../views/Admin.vue";
+import Fontes from "../views/Fontes.vue";
 import Fonte from "../views/componentes/Fonte.vue";
 import Gabinete from "../views/componentes/Gabinete.vue";
 import HdSsd from "../views/componentes/HdSsd.vue";
@@ -39,6 +40,11 @@ const routes = [
         next("/");
       }
     },
+  },
+  {
+    path: "/fontes",
+    name: "Fontes",
+    component: Fontes,
   },
   {
     path: "/componentes/fonte",

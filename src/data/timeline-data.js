@@ -159,6 +159,37 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
     longDescription: `O FORTRAN (Formula Translation) foi o primeiro compilador de linguagem de programação de alto nível a ser desenvolvido. Criado por uma equipe da IBM liderada por John Backus, o FORTRAN foi projetado para facilitar a programação de cálculos científicos e de engenharia. Sua introdução marcou o início da programação de alto nível e teve um impacto duradouro na forma como os programadores escrevem código até hoje.`,
   },
   {
+    year: "1956",
+    title: "Primeiro teclado usado para entrada de dados",
+    shortDescription: "Em 4 de julho de 1956, pesquisadores do MIT usaram pela primeira vez um teclado como um dispositivo de entrada direta para um computador.",
+    imageCard: "./images/timeline/1956-Primeiro-teclado-usado.jpg",
+    imageModal: "./images/timeline/1956-Primeiro-teclado-usado.jpg",
+    sourceCard: '<a href="https://www.computerhistory.org/collections/catalog/102732973/">@ Computer History Museum, Whirlwind Flexowriter, catalog number 102732973</a>',
+    sourceModal: '<a href="https://www.computerhistory.org/collections/catalog/102732973/">@ Computer History Museum, Whirlwind Flexowriter, catalog number 102732973</a>',
+    category: "Hardware",
+    longDescription: `Em 4 de julho de 1956, pesquisadores do MIT usaram pela primeira vez um teclado como um dispositivo de entrada direta para um computador.
+
+Antes disso, os usuários de computador normalmente usavam cartões perfurados ou fita de papel para inserir seus programas nos computadores.
+
+Em fevereiro de 1956, Doug Ross escreveu um memorando argumentando que uma Flexowriter, uma máquina de escrever controlada eletricamente, poderia ser usada como um dispositivo de entrada de computador.
+
+Cinco meses depois, em 4 de julho de 1956, um teclado foi conectado ao computador Whirlwind do MIT, um dos primeiros computadores de alta velocidade em larga escala, como um experimento. O experimento foi um sucesso, confirmando que a entrada de dados pelo teclado era muito mais útil e conveniente.`,
+  },
+  {
+    year: "1956",
+    title: "IBM 305 RAMAC",
+    shortDescription: "Em 13 de setembro de Em 1956, a IBM lançou o computador IBM RAMAC 305. RAMAC significava Método de Acesso Aleatório para Contabilidade e Controle. Incluía o IBM 350 Disk File, o primeiro disco rígido de armazenamento magnético.",
+    imageCard: "/images/timeline/1956-ramac-brochure.webp",
+    imageModal: "/images/timeline/1956-console-gabinetes-IBM-305-ramac.webp",
+    sourceCard: '<a href="https://www.ibm.com/history/ramac">@ IBM</a>',
+    sourceModal: '<a href="https://www.ibm.com/history/ramac">@ IBM</a>',
+    category: "Computadores",
+    longDescription: `O IBM 305 RAMAC — ou simplesmente RAMAC — foi o primeiro computador a usar uma unidade de disco de acesso aleatório. O progenitor de todas as unidades de disco rígido criadas desde então, tornou possível para qualquer usuário de computador armazenar, acessar, alterar e apagar dados de forma rápida e fácil, sem treinamento técnico ou intervenção manual. Ele abriu caminho para a invenção do banco de dados relacional , capacitou as empresas a pensar sobre dados de novas maneiras e, finalmente, lançou as bases para tudo, desde voos espaciais e caixas eletrônicos até mecanismos de busca e comércio eletrônico.
+
+Antes do RAMAC, a recuperação de informações por meio de um computador levava horas ou até dias. O RAMAC conseguia acessar e manipular dados exponencialmente mais rápido — em segundos. A máquina ocupava a maior parte de uma sala e armazenava uma quantidade irrisória para os padrões atuais — apenas 5 megabytes — e, ainda assim, representava um enorme salto em velocidade e eficiência que tornou o banco de dados relacional possível e mudou a forma como as empresas coletavam, utilizavam e aplicavam informações. Na época, a empresa descreveu o processo subjacente do RAMAC como "memória milagrosa".
+O RAMAC resolveu imediatamente a sobrecarga paralisante de dados analógicos nas empresas, possibilitando o acesso ao equivalente a 64.000 cartões perfurados quase instantaneamente.`,
+  },
+  {
     year: "1958",
     title: "Jack Kilby inventa o circuito integrado",
     shortDescription: "O primeiro circuito integrado é inventado.",
@@ -173,6 +204,20 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
   },
   {
     year: "1960",
+    title: "Projeto PLATO , o primeiro sistema generalizado de instrução assistida por computador",
+    shortDescription: "O PLATO foi lançado sob a direção de Bitzer em 1960. Junto com a curiosidade científica, Bitzer queria abordar a desigualdade educacional.",
+    imageCard: "./images/timeline/1960-PLATO-I-terminal.png",
+    imageModal: "./images/timeline/1960-PLATO-I-terminal.png",
+    sourceCard: '<a href="https://arstechnica.com/gadgets/2023/03/plato-how-an-educational-computer-system-from-the-60s-shaped-the-future/">The Wide World of Computer-Based Education (Bitzer, 1976), PLATO I terminal in 1960,</a>, via Ars Technica',
+    sourceModal: '<a href="https://arstechnica.com/gadgets/2023/03/plato-how-an-educational-computer-system-from-the-60s-shaped-the-future/">The Wide World of Computer-Based Education (Bitzer, 1976), PLATO I terminal in 1960,</a>, via Ars Technica',
+    category: "Software",
+    longDescription: `O PLATO (Lógica Programada para Operações Automatizadas de Ensino) surgiu no início da década de 1960 como um sistema de aprendizagem distribuído baseado em computador na Universidade de Illinois e foi o primeiro sistema generalizado de instrução assistida por computador.
+    
+    A equipe incluía Bitzer, professor de ECE e diretor do PLATO, Dan Albert, professor de física e chefe do CSL, e Chalmers Sherwin, físico.
+    O front-end era um aparelho de TV doméstico conectado a um display de tubo de armazenamento autossustentável e um pequeno teclado usado originalmente no Sistema de Defesa Tática Naval. Slides na tela apareciam em um projetor sob o controle do ILLIAC e eram manipulados pelas teclas de controle, e o ILLIAC podia sobrepor os slides com gráficos vetoriais e texto a 45 caracteres por segundo por meio do que Bitzer e Braunfeld chamaram de "quadro-negro eletrônico". O sistema oferecia feedback interativo em uma época em que a maior parte da interação com o computador era em lote. O computador foi batizado de PLATO em 1960 e posteriormente recebeu o nome alternativo de "Lógica Programada para Operações de Ensino Automático". Apenas um usuário podia ministrar aulas por vez, mas o protótipo funcionou.`,
+  },
+  {
+    year: "1960",
     title: "DEC PDP-1",
     shortDescription: "O primeiro computador minicomputador é lançado.",
     imageCard: "/images/timeline/1960-dec-pdp-1-726f9e9a.webp",
@@ -181,6 +226,57 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
       '<a href="https://commons.wikimedia.org/wiki/File:Spacewar!-PDP-1-20070512.jpg">Joi Ito from Inbamura, Japan</a>, <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>, via Wikimedia Commons',
     category: "Computadores",
     longDescription: `O DEC PDP-1, lançado em 1960, foi um dos primeiros minicomputadores da história. Ele foi projetado para ser mais acessível e menor do que os computadores mainframe da época, permitindo que mais instituições, como universidades e laboratórios de pesquisa, tivessem acesso à computação. O PDP-1 é frequentemente lembrado por seu papel na popularização da programação interativa e do tempo compartilhado.`,
+  },
+  {
+    year: "1961",
+    title: "PLATO II, com compartilhamento de tempo e acesso remoto",
+    shortDescription: "11 de março de 1961, PLATO II prova que poderia rodar com usuários simultâneos.",
+    imageCard: "./images/timeline/1961-PLATO2.png",
+    imageModal: "./images/timeline/1961-PLATO2-chart.png",
+    sourceCard: '<a href="https://arstechnica.com/gadgets/2023/03/plato-how-an-educational-computer-system-from-the-60s-shaped-the-future/">A Little History of e-Learning (pré-impressão, Cope & Kalantzis, 2021), Terminal PLATO II em 1961,</a>, via Ars Technica',
+    sourceModal: '<a href="https://arstechnica.com/gadgets/2023/03/plato-how-an-educational-computer-system-from-the-60s-shaped-the-future/">Boletim Informativo de Computadores Digitais do Escritório de Pesquisa Naval dos EUA, outubro de 1961 a abril de 1962., Diagrama de blocos do PLATO II,</a>, via Ars Technica',
+    category: "Software",
+    longDescription: `11 de março de 1961, Don Bitzer, juntamente com seu colega matemático Peter Braunfeld, demonstrou o sistema PLATO II aos dignitários presentes, incluindo David Dodds Henry, reitor da Universidade de Illinois. O evento foi chamado de "Conferência do Corpo Docente do Presidente sobre o Aprimoramento de Nossos Objetivos Educacionais nos Anos 60" e contou com a presença de mais de 100 professores e diversos convidados.
+    Nela é mostrado publicamente não apenas a capaciade do sistema prover educação, mas também de compartilhamento de tempo e acesso remoto de um sistema de computador. A demonstração foi realizada na Allerton House, 48 quilômetros a oeste do computador ILLIAC da Universidade de Illinois, no Laboratório de Ciências Coordenadas.
+    O PLATO II foi uma prova de conceito de que o PLATO poderia rodar com usuários simultâneos, neste caso dois devido a capacidade de memória do ILLIAC, mas a ideia era "N", ou seja, se você pode rodar dois usuários, podem muito bem ser N usuários, com N limitado apenas por memória, CPU e outros recursos.
+    Em 1969, o PLATO III suportava 20 terminais conectados a um único mainframe, representando um avanço significativo em poder computacional e acessibilidade. Em 1972, o PLATO IV podia acomodar até 1.000 usuários simultaneamente, um feito possibilitado pelas técnicas pioneiras de compartilhamento de tempo de Bitzer, adaptadas para computadores CDC 1604.`,
+  },
+   {
+    year: "1964",
+    title: "Douglas Engelbart inventa o mouse",
+    shortDescription: "Por volta de 1964, Douglas Engelbart inventou o mouse. Seu protótipo consistia em uma estrutura de madeira com duas rodas finas de metal que entravam em contato com a superfície em que era usado.",
+    imageCard: "./images/timeline/1964-prototype-The_First_Mouse.jpg",
+    imageModal: "./images/timeline/1964-prototype-The_First_Mouse.jpg",
+    sourceCard: '<a href="https://commons.wikimedia.org/wiki/File:The_First_Mouse,_1964_-_prototype,_invented_by_Douglas_Engelbart_and_built_by_Bill_English_at_the_Stanford_Research_Institute_%28SRI%29_-_National_Museum_of_American_History_%282015-10-13_by_Kazuhisa_OTSUBO%29.jpg">Kazuhisa OTSUBO from Tokyo, Japan</a>, <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>, via Wikimedia Commons',
+    sourceModal: '<a href="https://commons.wikimedia.org/wiki/File:The_First_Mouse,_1964_-_prototype,_invented_by_Douglas_Engelbart_and_built_by_Bill_English_at_the_Stanford_Research_Institute_%28SRI%29_-_National_Museum_of_American_History_%282015-10-13_by_Kazuhisa_OTSUBO%29.jpg">Kazuhisa OTSUBO from Tokyo, Japan</a>, <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>, via Wikimedia Commons',
+    category: "Hardware",
+    longDescription: `Douglas Engelbart trabalhou na SRI International desenvolvendo ferramentas para facilitar o uso de computadores. Naquela época, os computadores não tinham interface gráfica de usuário — todo o trabalho era feito digitando comandos em um teclado.
+
+Por volta de 1964, Douglas Engelbart inventou o mouse. Seu protótipo consistia em uma estrutura de madeira com duas rodas finas de metal que entravam em contato com a superfície em que era usado.
+
+Em 1967, Engelbart solicitou e, em 1970, recebeu a patente americana 3.541.541 para sua invenção. Esta patente não menciona a palavra "mouse", descrevendo o dispositivo como um "indicador de posição XY para um sistema de exibição".
+
+Quando perguntaram a Engelbart de onde veio o nome, ele disse:
+
+"Ninguém consegue se lembrar. Parecia apenas um rato com rabo, e todos nós o chamávamos assim."
+
+Engelbart nunca recebeu royalties por sua invenção do mouse, dizendo:
+
+"A SRI patenteou o mouse, mas não tinha ideia do seu valor. Alguns anos depois, descobriu-se que eles o haviam licenciado para a Apple por algo em torno de US$ 40.000."
+
+O mouse de Engelbart foi demonstrado publicamente pela primeira vez na Conferência Conjunta de Computadores de Outono de 1968.`,
+  },
+  {
+    year: "1964",
+    title: "Primeira Tela de plasma criada",
+    shortDescription: "Os professores Donald L. Bitzer (BSEE '55, MSEE '56, PhD '60) e H. Gene Slottow (PhD '64), juntamente com o aluno Robert Willson (PhD '66), inventaram o painel de plasma em 1964.",
+    imageCard: "/images/timeline/1964-Plasma-Display.jpg",
+    imageModal: "/images/timeline/1964-Plasma-Display.jpg",
+    source:
+      '<a href="https://distributedmuseum.illinois.edu/wp-content/uploads/2017/12/Plasma-Display-0006443.jpg">PLATO Plasma Panel. (1966). H. Gene Slottow Papers, 1942-89. Record Series 11/6/29, Box 1, Photographs.</a>, University of Illinois Archives.',
+    category: "Hardware",
+    longDescription: `Os professores Donald L. Bitzer (BSEE '55, MSEE '56, PhD '60) e H. Gene Slottow (PhD '64), juntamente com o aluno Robert Willson (PhD '66), inventaram o painel de plasma em 1964. Originalmente concebido como um componente interativo da rede educacional PLATO, o painel de plasma era tanto um display quanto um dispositivo de armazenamento. Cada pixel ou ponto na tela brilhava como um pequeno letreiro de neon. Uma vez aceso, um pixel permanecia aceso até que a pessoa no terminal PLATO solicitasse novas informações ao computador.
+    O monitor de plasma criado em Illinois é o precursor dos atuais monitores de televisão de tela plana de alta definição. `,
   },
   {
     year: "1965",
@@ -192,6 +288,19 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
       '<a href="https://commons.wikimedia.org/wiki/File:Lei_de_moore_2006.png">José Maria Silveira Neto</a>, Public domain, via Wikimedia Commons',
     category: "Hardware",
     longDescription: `A Lei de Moore, formulada por Gordon Moore, cofundador da Intel, é uma observação de que o número de transistores em um chip de computador dobra aproximadamente a cada dois anos, levando a um aumento exponencial na capacidade de processamento e uma redução nos custos. Essa previsão tem se mostrado verdadeira por várias décadas e é um dos principais motores da evolução da tecnologia da informação.`,
+  },
+  {
+    year: "1965",
+    title: "Primeira tela sensível ao toque acionada por dedo",
+    shortDescription: "A Eric Arthur Johnson desenvolve a primeira tela sensível ao toque acionada pelos dedos.",
+    imageCard: "./images/timeline/1965-touch.jpg",
+    imageModal: "./images/timeline/1965-touch.jpg",
+    sourceCard: '<a href="http://mraths.org.uk/?page_id=531">© MRATHS 2016.</a>',
+    sourceModal: '<a href="http://mraths.org.uk/?page_id=531">© MRATHS 2016.</a>',
+    category: "Hardware",
+    longDescription: `A ideia de uma interface touchscreen para um computador surgiu porque, nas funções de Controle de Tráfego Aéreo, decisões rápidas e precisas, e a consequente comunicação, são necessárias. Isso era cada vez mais necessário para controlar a Força de Defesa Aérea do Reino Unido ao reagir a ameaças de jatos rápidos.
+
+Trabalhando na RRE Malvern, Eric Johnson percebeu que uma interface sensível ao toque para uma tela de computador, oferecendo opções ao operador, tinha um potencial significativo para melhorar a carga de trabalho e a capacidade de resposta dos operadores de ATC. Ele utilizou finos fios de cobre em um CRT de computador e desenvolveu circuitos para detectar de forma confiável quando estes fossem tocados. Seu conceito baseava-se na premissa elegante de que a maioria das interações com um computador de ATC envolve fazer escolhas. Ele também previu que o design poderia funcionar como um teclado para inserir caracteres.`,
   },
   {
     year: "1968",
@@ -348,6 +457,19 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
     longDescription: `O IBM Personal Computer (modelo 5150) foi o computador que definiu o padrão da indústria e popularizou a arquitetura x86. Seu sucesso levou à criação de um vasto ecossistema de hardware e software compatíveis, conhecidos como 'clones de PC', que dominaram o mercado por décadas.`,
   },
   {
+    year: "1981",
+    title: "O primeiro computador portátil, o Osborne 1",
+    shortDescription: "Em 3 de abril de 1981, Adam Osborne revelou o primeiro computador portátil de sucesso comercial na West Coast Computer Faire, em São Francisco.",
+    imageCard: "/images/timeline/1981-Osborne_1_open.jpg",
+    imageModal: "/images/timeline/1981-Osborne_1_open.jpg",
+    sourceCard: '<a href="https://en.wikipedia.org/wiki/File:Osborne_1_open.jpg">Bilby</a>, <a href="https://creativecommons.org/licenses/by/3.0/deed.en">CC BY 3.0 Unported</a>, via Wikimedia Commons',
+    sourceModal: '<a href="https://en.wikipedia.org/wiki/File:Osborne_1_open.jpg">Bilby</a>, <a href="https://creativecommons.org/licenses/by/3.0/deed.en">CC BY 3.0 Unported</a>, via Wikimedia Commons',
+    category: "Computadores",
+    longDescription: `Em 3 de abril de 1981, Adam Osborne revelou o primeiro computador portátil de sucesso comercial na West Coast Computer Faire, em São Francisco.
+
+O Osborne 1 era um computador portátil do tamanho de uma mala de 10 kg, baseado na CPU Z80A, e incluía um monitor de 5 polegadas, duas unidades de disquete de 5,25 polegadas e um teclado de tamanho normal. No entanto, não incluía bateria e precisava ser conectado a uma tomada elétrica. Mais tarde, foi disponibilizada uma bateria com duração de uma hora.`,
+  },
+  {
     year: "1983",
     title: "Apple Lisa",
     shortDescription:
@@ -359,6 +481,20 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
     category: "Computadores",
     longDescription: `O Apple Lisa foi uma máquina de 16-bit, baseado no Motorola 68000, que vinha com um HD Winchester de 5Mb e 1Mb de RAM. O computador tinha uma tela monocromática embutida e um drive duplo de disquetes de 5.25 polegadas. Ele foi lançado nos EUA em 19 de janeiro de 1983.
                       Foi o primeiro computador pessoal a utilizar uma Interface Gráfica de Usuário (GUI). Até esse ponto, todos os computadores eram controlados digitando comandos com o teclado. O Lisa vinha com um mouse, permitindo que o usuário apontasse e clicasse em ícones, janelas e menus.`,
+  },
+  {
+    year: "1983",
+    title: "Lançado o PC com tela sensível ao toque HP-150",
+    shortDescription: "Em 1983, a Hewlett-Packard lançou o que pode ter sido o primeiro computador pessoal do mundo com tela sensível ao toque integrada.",
+    imageCard: "/images/timeline/1983-hp150_small.jpg",
+    imageModal: "/images/timeline/1983-150_touchscreen_20081129.jpg",
+    sourceCard: '<a href="https://www.vintagecomputing.com/wp-content/images/retroscan/hp150_small.jpg">From Personal Computing, December 1983 </a>, via https://www.vintagecomputing.com/',
+    sourceModal: '<a href="https://en.wikipedia.org/wiki/File:Hp150_touchscreen_20081129.jpg">MyName (Cinecol)</a>, <a href="https://creativecommons.org/licenses/by/3.0/deed.en">CC BY 3.0 Unported</a>, via Wikimedia Commons',
+    category: "Computadores",
+    longDescription: `Em 1983, a Hewlett-Packard lançou o que pode ter sido o primeiro computador pessoal do mundo com tela sensível ao toque integrada. O HP-150 era um PC compatível com MS-DOS baseado no 8088, com alguns recursos avançados para a época. Infelizmente, a arquitetura de hardware do 150 provou ser tão diferente que ele não era compatível com a maioria dos programas para IBM PC.
+O HP-150 utiliza um método rudimentar e de baixa resolução para detectar a posição dos dedos na tela. A unidade projeta uma grade de feixes infravermelhos sobre a superfície da tela. Ao detectar quais feixes estão obstruídos por um objeto, o computador consegue calcular as coordenadas do toque.
+
+Além da tela sensível ao toque, o HP-150 se destaca por ser o primeiro computador nos EUA a utilizar o formato de disquete "micro-floppy" de 3 1/2 polegadas da Sony, além de oferecer suporte a redes Ethernet, discos rígidos e à primeira impressora LaserJet da HP (por meio de uma interface HP-IB). Nada mal para 1983.`,
   },
   {
     year: "1983",
@@ -477,6 +613,39 @@ O primeiro produto da HP, não foi um computador, mas na verdade o oscilador de 
     category: "Inteligência Artificial",
     longDescription: `Em 2 de setembro de 1997 a IBM anuncia o RS/6000 SP Deep Blue, supercomputador aprimorado para jogar xadrez.
     Após seu computador de xadrez Deep Blue derrotar o campeão mundial de xadrez humano Gary Kasparov em uma partida acompanhada de perto em maio, a empresa pioneira em computadores decidiu tornar a máquina ainda mais rápida e potente. Em 2 de setembro, a IBM anunciou que seu modelo RS/6000 SP, um supercomputador paralelo, estava 58% mais rápido graças a um novo microprocessador e alguns refinamentos de software. Kasparov não estava disponível para comentar`,
+  },
+  {
+    year: "1999",
+    title: "Nvidia lança GeForce 256",
+    shortDescription:
+      "Lançada em 11 de outubro de 1999, a GeForce 256 foi descrito pela Nvidia como a primeira GPU (Unidade de Processamento Gráfico) do mundo.",
+    imageCard:
+      "/images/timeline/1999-NVIDIA_Geforce_256.jpg",
+    imageModal:
+      "/images/timeline/1999-VisionTek_GeForce_256.jpg",
+    sourceCard:
+      '<a href="https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025.svg">por Konstantin Lanzet, GPU NVidia Geforce 256, NV10</a>,<a href="https://creativecommons.org/licenses/by/3.0/deed.en">CC BY 3.0 Não Adaptada.</a>, via Wikimedia Commons',
+    sourceModal:
+      '<a href="https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025.svg">por Hyins, VisionTek GeForce 256 DDR Graphic card</a>, domínio público, via Wikimedia Commons',
+    category: "Hardware",
+    longDescription: `Lançada em 11 de outubro de 1999, a GeForce 256 foi o primeiro produto lançado pela Nvidia sob a marca GeForce.
+
+Foi descrito pela Nvidia como a primeira GPU (Unidade de Processamento Gráfico) do mundo. A definição da Nvidia na época era "um processador de chip único com mecanismos integrados de transformação, iluminação, configuração/recorte de triângulos e renderização, capaz de processar no mínimo 10 milhões de polígonos por segundo".`,
+  },
+  {
+    year: "2008",
+    title: "HTC lança o primeiro smartphone Android",
+    shortDescription: "O primeiro smartphone Android disponível ao público foi o HTC Dream, também conhecido como T-Mobile G1, lançado em 20 de outubro de 2008 nos EUA.",
+    imageCard: "/images/timeline/2008-Android_robot.png",
+    imageModal: "/images/timeline/2008-T-Mobile_G1_launch_event_2.jpg",
+    sourceCard: '<a href="https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025.svg">@ Google, Android logo</a>,<a href="https://creativecommons.org/licenses/by/3.0/deed.en">CC BY 3.0 Unported</a>, via Wikimedia Commons',
+    sourceModal: '<a href="https://en.wikipedia.org/wiki/File:T-Mobile_G1_launch_event_2.jpg">Michael Oryl</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/deed.en">CC BY-SA 2.0</a>, via Wikimedia Commons',
+    category: "Software",
+    longDescription: `O Android é um sistema operacional móvel desenvolvido para dispositivos com tela sensível ao toque, como smartphones e tablets. Baseado no Linux, o desenvolvimento do Android começou em 2003 pela Android Inc., que foi comprada pelo Google em 2005.
+
+O primeiro smartphone Android disponível ao público foi o HTC Dream, também conhecido como T-Mobile G1, lançado em 20 de outubro de 2008 nos EUA. Ele utilizava um sistema Qualcomm MSM7201A de 528 MHz com 192 MB de RAM e 256 MB de armazenamento interno, expansível em até 16 GB usando um slot para cartão Micro SD. Também possuía tela sensível ao toque.
+
+O Android se tornou o sistema operacional móvel mais popular do mundo. Em agosto de 2023, o sistema operacional Android estava instalado em 70% dos dispositivos móveis, enquanto o iOS da Apple representava 28%.`,
   },
   {
     year: "2014",
